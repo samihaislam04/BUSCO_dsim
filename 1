@@ -1,0 +1,29 @@
+#!/bin/bash
+#SBATCH --job-name=busco_dsim
+#SBATCH --time=24:00:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
+#SBATCH --output=logs/busco_dsim.%j.out
+#SBATCH --error=logs/busco_dsim.%j.err
+
+echo "Starting BUSCO at $(date)"
+echo "Running on $(hostname)"
+
+# Move to assembly directory
+cd /scratch/user/samiha.islam/simulans_hifiasm
+
+# Load conda properly
+source ~/miniconda3/etc/profile.d/conda.sh 2>/dev/null || source ~/anaconda3/etc/profile.d/conda.sh
+
+conda activate busco_env
+
+# Run BUSCO using LOCAL lineage dataset
+busco \
+  -i asm.bp.p_ctg.fa \
+  -l /scratch/user/samiha.islam/simulans_hifiasm/busco_downloads/lineages/diptera_odb10 \
+  -o busco_dsim_p_ctg \
+  -m genome \
+  -c 16
+
+echo "BUSCO finished at $(date)"
