@@ -1,0 +1,32 @@
+#!/bin/bash
+#SBATCH --job-name=busco_dsim
+#SBATCH --time=24:00:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
+#SBATCH --output=logs/busco_dsim.%j.out
+#SBATCH --error=logs/busco_dsim.%j.err
+
+echo "======================================="
+echo "BUSCO job started at $(date)"
+echo "Running on $(hostname)"
+echo "======================================="
+
+cd /scratch/user/samiha.islam/simulans_hifiasm
+
+eval "$(conda shell.bash hook)"
+conda activate busco_env
+
+rm -rf busco_dsim_p_ctg
+
+busco \
+  -i asm.bp.p_ctg.fa \
+  -l /scratch/user/samiha.islam/simulans_hifiasm/diptera_odb10 \
+  -o busco_dsim_p_ctg \
+  -m genome \
+  -c 16 \
+  --offline
+
+echo "======================================="
+echo "BUSCO job finished at $(date)"
+echo "======================================="
